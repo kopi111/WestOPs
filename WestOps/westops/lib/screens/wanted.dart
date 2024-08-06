@@ -1,9 +1,7 @@
+import 'dart:convert'; // Import for Base64 decoding
 import 'package:flutter/material.dart';
 import 'package:westops/api/getwantedapi.dart';
 import 'package:westops/modles/wantedPersons.dart';
-import 'wanted_person_detail.dart'; // Import the detail page
-import 'package:flutter/material.dart';
-import 'package:westops/api/getwantedapi.dart';
 import 'wanted_person_detail.dart'; // Import the detail page
 
 class Wanted extends StatefulWidget {
@@ -21,7 +19,7 @@ class _WantedState extends State<Wanted> {
   @override
   void initState() {
     super.initState();
-    futureWanted = ApiService().fetchData('wanted.php', 'wantedPerson');
+    futureWanted = ApiService().fetchData('readwantedperson.php', 'wantedPerson');
   }
 
   void filterSearch(String query, List<WantedPersons> originalList) {
@@ -77,28 +75,59 @@ class _WantedState extends State<Wanted> {
                   ),
                 ),
                 Expanded(
-                  child: ListView.builder(
+                  child: ListView.separated(
                     itemCount: filteredList.length,
                     itemBuilder: (context, index) {
                       final person = filteredList[index];
                       return Container(
                         color: index % 2 == 0 ? Colors.blue : Colors.white,
                         child: ListTile(
-                          title: Text(
-                            '${person.firstName} ${person.lastName}',
-                            style: TextStyle(
-                              color: index % 2 == 0 ? Colors.white : Colors.black,
+                          contentPadding: const EdgeInsets.all(8.0),
+                          title: Padding(
+                            padding: const EdgeInsets.only(left: 26.0),
+                            child: Text(
+                              'Name: ${person.firstName} ${person.lastName} O/C ${person}', 
+                              style: TextStyle(
+                                color: index % 2 == 0 ? Colors.white : Colors.black,
+                                 fontSize: 18, 
+                              ),
                             ),
                           ),
-                          subtitle: Text(
-                            person.crimeDescription ?? '',
-                            style: TextStyle(
-                              color: index % 2 == 0 ? Colors.white : Colors.black,
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(left: 26.0),
+                            child: Text(     
+                               'Offence: ${person.crimeDescription ?? ''}',
+                              style: TextStyle(
+                                color: index % 2 == 0 ? Colors.white : Colors.black,
+                                 fontSize: 15, 
+                              ),
                             ),
                           ),
+
+                          //trailing: Icon(Icons.mode_edit),
+
+                          trailing: IconButton(
+                            icon: Icon(Icons.mode_edit),
+                            onPressed: () {
+                              // Navigate to the edit page or show an edit dialog
+                              // For example:
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => EditWantedPersonPage(person: person),
+                              //   ),
+                              // );
+                            },
+                          ),
+
                           leading: person.photoURL != null && person.photoURL!.isNotEmpty
-                              ? Image.network(person.photoURL!)
-                              : null,
+                              ? Image.memory(
+                                  base64Decode(person.photoURL!),
+                                  width: 100, // Increase the size of the picture
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                )
+                              : const Icon(Icons.person, size: 100), // Increase icon size
                           onTap: () {
                             Navigator.push(
                               context,
@@ -110,12 +139,28 @@ class _WantedState extends State<Wanted> {
                         ),
                       );
                     },
+                    separatorBuilder: (context, index) => Divider(
+                      color: Colors.grey,
+                      thickness: 1,
+                    ),
                   ),
                 ),
               ],
             );
           }
         },
+      ),
+       floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to the add new person page or show a form dialog
+          // For example:
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => AddWantedPersonPage()),
+          // );
+        },
+        child: Icon(Icons.add),
+        tooltip: 'Add New Wanted Person',
       ),
     );
   }

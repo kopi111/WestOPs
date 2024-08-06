@@ -62,26 +62,26 @@ class _HomeState extends State<Home> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: 'Duty',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.traffic),
-            label: 'Traffic',
+            icon: Icon(Icons.car_rental),
+            label: 'Stolen Vehicles',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Wanted',
+            icon: Icon(Icons.person_outline),
+            label: 'Wanted Persons',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Missing',
+            icon: Icon(Icons.person_pin),
+            label: 'Missing Persons',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
             label: 'Wording Booklet',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.car_rental),
+            icon: Icon(Icons.car_repair_sharp),
             label: 'Traffic Offences & Stolen Vehicles',
           ),
         ],

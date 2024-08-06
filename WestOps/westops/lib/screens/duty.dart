@@ -24,7 +24,7 @@ class _DutyScreenState extends State<DutyScreen> {
 
   Future<Document?> fetchDocument() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.0.9/westops/fetch_pdf.php'));
+      final response = await http.get(Uri.parse('http://kopi111.great-site.net/fetch_pdf.php'));
 
       if (response.statusCode == 200) {
         List jsonResponse = json.decode(response.body);

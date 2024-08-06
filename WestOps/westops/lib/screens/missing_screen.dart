@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:westops/modles/missing_persons.dart';
 import 'package:westops/api/getwantedapi.dart';
-import 'package:flutter/material.dart';
 import 'package:westops/screens/missing_person_detail.dart';
-import 'package:flutter/material.dart';
-import 'package:westops/api/getwantedapi.dart';
-import 'missing_person_detail.dart'; // Import the detail page
+import 'dart:convert'; // Import this package for Base64 decoding
 
 class MissingPersonsScreen extends StatefulWidget {
   const MissingPersonsScreen({super.key});
@@ -22,7 +19,7 @@ class _MissingPersonsScreenState extends State<MissingPersonsScreen> {
   @override
   void initState() {
     super.initState();
-    futureMissingPersons = ApiService().fetchData('missing.php', 'missingPerson');
+    futureMissingPersons = ApiService().fetchData('readmissingperson.php', 'missingPerson');
   }
 
   void filterSearch(String query, List<MissingPersons> originalList) {
@@ -36,7 +33,7 @@ class _MissingPersonsScreenState extends State<MissingPersonsScreen> {
             .where((person) =>
                 person.firstName.toLowerCase().contains(query.toLowerCase()) ||
                 person.lastName.toLowerCase().contains(query.toLowerCase()) ||
-                (person.reportedDate.toLowerCase().contains(query.toLowerCase())))
+                person.reportedDate.toLowerCase().contains(query.toLowerCase()))
             .toList();
       });
     }
@@ -78,28 +75,42 @@ class _MissingPersonsScreenState extends State<MissingPersonsScreen> {
                   ),
                 ),
                 Expanded(
-                  child: ListView.builder(
+                  child: ListView.separated(
                     itemCount: filteredList.length,
                     itemBuilder: (context, index) {
                       final person = filteredList[index];
                       return Container(
                         color: index % 2 == 0 ? Colors.blue : Colors.white,
                         child: ListTile(
-                          title: Text(
-                            '${person.firstName} ${person.lastName}',
-                            style: TextStyle(
-                              color: index % 2 == 0 ? Colors.white : Colors.black,
+                          contentPadding: const EdgeInsets.all(8.0),
+                          title: Padding(
+                            padding: const EdgeInsets.only(left: 26.0),
+                            child: Text(
+                              'Name${person.firstName} ${person.lastName}',
+                              style: TextStyle(
+                                color: index % 2 == 0 ? Colors.white : Colors.black,
+                                fontSize: 18,
+                              ),
                             ),
                           ),
-                          subtitle: Text(
-                            'Reported: ${person.reportedDate}',
-                            style: TextStyle(
-                              color: index % 2 == 0 ? Colors.white : Colors.black,
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(left: 26.0),
+                            child: Text(
+                              'Reported: ${person.reportedDate}',
+                              style: TextStyle(
+                                color: index % 2 == 0 ? Colors.white : Colors.black,
+                                fontSize: 15,
+                              ),
                             ),
                           ),
                           leading: person.photoURL != null && person.photoURL!.isNotEmpty
-                              ? Image.network(person.photoURL!)
-                              : Icon(Icons.person, color: index % 2 == 0 ? Colors.white : Colors.black),
+                              ? Image.memory(
+                                  base64Decode(person.photoURL!),
+                                  width: 100, // Increase the size of the picture
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                )
+                              : const Icon(Icons.person, size: 100), // Increase icon size
                           onTap: () {
                             Navigator.push(
                               context,
@@ -111,6 +122,10 @@ class _MissingPersonsScreenState extends State<MissingPersonsScreen> {
                         ),
                       );
                     },
+                    separatorBuilder: (context, index) => Divider(
+                      color: Colors.grey,
+                      thickness: 1,
+                    ),
                   ),
                 ),
               ],

@@ -9,6 +9,7 @@ class WantedPersons {
   final double? rewardAmount;
   final String? contactPhoneNumber;
   final String? status;
+   final String? alias;
   final int verify;
   final int? userID;
 
@@ -23,6 +24,7 @@ class WantedPersons {
     this.rewardAmount,
     this.contactPhoneNumber,
     this.status,
+    this.alias,
     required this.verify,
     this.userID,
   });
@@ -36,6 +38,7 @@ class WantedPersons {
       dateOfBirth: json['dateOfBirth'],
       crimeDescription: json['crimeDescription'],
       photoURL: json['photoURL'],
+      alias: json['alias'],
       rewardAmount: json['rewardAmount'] != null ? double.parse(json['rewardAmount'].toString()) : null,
       contactPhoneNumber: json['contactPhoneNumber'],
       status: json['status'],
